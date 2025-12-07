@@ -1,0 +1,18 @@
+0 verbose cli /Users/vayne/.volta/tools/image/node/25.2.0/bin/node /Users/vayne/.volta/tools/image/npm/11.6.0/bin/npm-cli.js
+1 info using npm@11.6.0
+2 info using node@v25.2.0
+3 silly config load:file:/Users/vayne/.volta/tools/image/npm/11.6.0/npmrc
+4 silly config load:file:/Users/vayne/Documents/trae_projects/.npmrc
+5 silly config load:file:/Users/vayne/.npmrc
+6 silly config load:file:/Users/vayne/.volta/tools/image/node/25.2.0/etc/npmrc
+7 verbose title npm config get prefix
+8 verbose argv "config" "get" "prefix"
+9 verbose logfile logs-max:10 dir:/Users/vayne/Documents/trae_projects/npm-cache/_logs/2025-12-06T01_49_08_456Z-
+10 verbose logfile /Users/vayne/Documents/trae_projects/npm-cache/_logs/2025-12-06T01_49_08_456Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /Users/vayne/Documents/trae_projects
+13 verbose os Darwin 23.4.0
+14 verbose node v25.2.0
+15 verbose npm  v11.6.0
+16 verbose exit 0
+17 info ok
