@@ -31,6 +31,7 @@ def mmr_select(query_vector, doc_vectors, k=3, lambda_mult=0.5):
                 # 相关性,i与候选文档的相关性
                 relevance = quer_similarities[i]
                 selected_vecs = doc_vectors[selected]  # S 结果集
+                # 当前遍历到的文档与已选中文档的余弦相似性列表
                 sims = cosine_similarity(
                     doc_vectors[i], selected_vecs
                 )  # i 与 S 结果集的相似度
