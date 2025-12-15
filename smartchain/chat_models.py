@@ -4,6 +4,9 @@ from typing import Any, List, Tuple
 from openai import OpenAI
 from .message import AIMessage, HumanMessage, SystemMessage
 from .prompts import ChatPromptValue
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class ChatOpenAI:
@@ -52,7 +55,7 @@ class ChatOpenAI:
 
     def _convert_input(self, input: Any) -> List[Tuple[str, str]]:
         if isinstance(input, ChatPromptValue):
-            input.to_messages()
+            input = input.to_messages()
         if isinstance(input, str):
             return [{"role": "user", "content": input}]
         elif isinstance(input, list):
@@ -65,16 +68,16 @@ class ChatOpenAI:
                         role = "assistant"
                     elif isinstance(msg, HumanMessage):
                         role = "user"
-                    elif isinstance(msg, SystemMessage):
+                    else:
                         role = "system"
                     content = msg.content if hasattr(msg, "content") else str(msg)
-                    messages.append({"role": role, content: content})
+                    messages.append({"role": role, "content": content})
                 elif isinstance(msg, dict):
                     messages.append(msg)
                 elif isinstance(msg, tuple) and len(msg) == 2:
                     role, content = msg
                     messages.append({"role": role, "content": content})
-                return messages
+            return messages
         else:
             return [{"role": "user", "content": str(input)}]
 
@@ -107,8 +110,30 @@ class ChatDeepSeek:
         return AIMessage(content=content)
 
     def _convert_input(self, input):
+        if isinstance(input, ChatPromptValue):
+            input = input.to_messages()
         if isinstance(input, str):
             return [{"role": "user", "content": input}]
+        elif isinstance(input, list):
+            messages = []
+            for msg in input:
+                if isinstance(msg, str):
+                    messages.append({"role": "user", "content": msg})
+                elif isinstance(msg, (AIMessage, HumanMessage, SystemMessage)):
+                    if isinstance(msg, AIMessage):
+                        role = "assistant"
+                    elif isinstance(msg, HumanMessage):
+                        role = "user"
+                    else:
+                        role = "system"
+                    content = msg.content if hasattr(msg, "content") else str(msg)
+                    messages.append({"role": role, "content": content})
+                elif isinstance(msg, dict):
+                    messages.append(msg)
+                elif isinstance(msg, tuple) and len(msg) == 2:
+                    role, content = msg
+                    messages.append({"role": role, "content": content})
+            return messages
         else:
             return [{"role": "user", "content": str(input)}]
 

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/pyright/main/docs/config.schema.json",
+  "typeCheckingMode": "strict",
+  "reportGeneralTypeIssues": "error",
+  "reportMissingImports": "error",
+  "include": [
+    "2.langchain"
+  ],
+  "exclude": [
+    "**/__pycache__/**",
+    "1.vector/**",
+    "models/**"
+  ]
+}
