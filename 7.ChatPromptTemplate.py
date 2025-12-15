@@ -14,7 +14,7 @@ template = ChatPromptTemplate(
 
 prompt_value = template.invoke({"name": "小助", "user_input": "你叫什么名字?"})
 
-# print(prompt_value.to_string())
-# print(prompt_value.to_messages())
+print(prompt_value.to_string())
+print(prompt_value.to_messages())
 result = llm.invoke(prompt_value)
 print("+++", result.content)

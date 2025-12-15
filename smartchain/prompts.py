@@ -1,5 +1,6 @@
 import re
 
+
 from smartchain.message import AIMessage, HumanMessage, SystemMessage
 
 
@@ -81,6 +82,33 @@ class ChatPromptTemplate:
         formatted_messages = self._format_all_messages(input_variables)
         return ChatPromptValue(message=formatted_messages)
 
+    def _get_placeholder_value(self, variable_name, value):
+        if value is None:
+            raise ValueError(f"MessagePlaceHolder {variable_name} 对应的值缺失")
+        if isinstance(value, ChatPromptValue):
+            return value.to_messages()
+        elif isinstance(value, list):
+            return [self._get_single_message(item) for item in value]
+        else:
+            return [self._get_single_message(value)]
+
+    def _get_single_message(self, value):
+        if isinstance(value, (SystemMessage, HumanMessage, AIMessage)):
+            return value
+        elif hasattr(value, "type") and hasattr(value, "content"):
+            return value
+        elif isinstance(value, str):
+            return HumanMessage(content=value)
+        elif isinstance(value, tuple):
+            role, content = value
+            return self._create_message_from_role(role, content)
+        elif isinstance(value, dict):
+            role = value.get("role", "user")
+            content = value.get("content", "")
+            return self._create_message_from_role(role, content)
+        else:
+            raise TypeError("无法将占位符的内容转化为消息")
+
     def _format_all_messages(self, variables):
         """
         把传入的 variables 字典值,注入到模板中, 并返回新的模板列表
@@ -96,8 +124,10 @@ class ChatPromptTemplate:
             elif isinstance(msg, BaseMessagePromptTemplate):
                 formatted_message.append(msg.format(**variables))
             elif isinstance(msg, MessagesPlaceholder):
-                pass
-                # placeholder_messages = self._get_placeholder_value()
+                placeholder_messages = self._get_placeholder_value(
+                    msg.variable_name, variables.get(msg.variable_name)
+                )
+                formatted_message.extend(placeholder_messages)
             else:
                 formatted_message.append(msg)
         return formatted_message
@@ -117,15 +147,15 @@ class ChatPromptTemplate:
     def from_messages(cls, messages):
         return cls(messages=messages)
 
-
-def format_messages(self, **kwargs):
-    return self._format_all_message(kwargs)
+    def format_messages(self, **kwargs):
+        return self._format_all_messages(kwargs)
 
 
 class BaseMessagePromptTemplate:
     def __init__(self, prompt) -> None:
         self.prompt = prompt
 
+    @classmethod
     def from_template(cls, template: str):
         prompt = PromptTemplate.from_template(template)
         return cls(prompt=prompt)
